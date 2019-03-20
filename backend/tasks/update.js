@@ -13,7 +13,69 @@ const sources = {
   populations: "http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL",
 };
 
-const downloadCountriesAsync = async function() {
+// Downloads a *.zip:
+const downloadArchiveAsync = async function(source) {
+  var response = await axios.get(source, {
+    params: {
+      downloadformat: 'xml',
+    },
+    responseType: 'stream',
+  });
+  return await response.data;
+};
+
+// Extracts an *.xml:
+const extractFileAsync = async function(archive) {
+  return await new Promise((resolve, reject) => {
+    archive
+      .pipe(unzipper.Parse())
+      .on('entry', function(entry) {
+        // Archives should only contain one entry.
+        resolve(entry);
+      });
+  });
+};
+
+// Gets XML as a String:
+const readFileAsStringAsync = async function(file) {
+  const chunks = [];
+  return await new Promise((resolve, reject) => {
+    file.on('data', chunk => chunks.push(chunk));
+    file.on('error', reject);
+    file.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  });
+};
+
+// Gets values from XML as an Array of Objects:
+const parseXmlAsync = async function(xml) {
+  const parsedXml = await new Promise((resolve, reject) => {
+    parseString(xml, function(error, result) {
+      resolve(result);
+    });
+  });
+  return _.map(parsedXml.Root.data[0].record, (record) => {
+    return {
+      country: record.field[0]._,
+      code: record.field[0].$.key,
+      year: Number(record.field[2]._),
+      value: Number(record.field[3]._),
+    };
+  });
+};
+
+const getValuesAsync = async function(source) {
+  try {
+    const archive = await downloadArchiveAsync(source);
+    const file = await extractFileAsync(archive);
+    const xml = await readFileAsStringAsync(file);
+    return await parseXmlAsync(xml);
+  } catch (error) {
+    // TODO: Better error handling.
+    console.error(error);
+  }
+};
+
+const getCountriesAsync = async function() {
   try {
     const response = await axios.get(sources.countries, {
       params: {
@@ -32,87 +94,4 @@ const downloadCountriesAsync = async function() {
   }
 };
 
-// TODO: Split in smaller methods
-const downloadArchiveAsync = async function(source) {
-  try {
-    // 1. Downloading *.zip:
-    var response = await axios.get(source, {
-      params: {
-        downloadformat: 'xml',
-      },
-      responseType: 'stream',
-    });
-    //
-    // 2. Extracting *.xml:
-    const archive = await response.data;
-    const file = await new Promise((resolve, reject) => {
-      archive
-        .pipe(unzipper.Parse())
-        .on('entry', function(entry) {
-          // Archives should only contain one entry.
-          resolve(entry);
-        });
-    });
-    //
-    // 3. Getting a String:
-    const xmlChunks = [];
-    const xml = await new Promise((resolve, reject) => {
-      file.on('data', chunk => xmlChunks.push(chunk));
-      file.on('error', reject);
-      file.on('end', () => resolve(Buffer.concat(xmlChunks).toString('utf8')));
-    });
-    //
-    // 4. Getting an Object:
-    const parsedXml = await new Promise((resolve, reject) => {
-      // TODO: Handle errors
-      parseString(xml, function(error, result) {
-        resolve(result);
-      });
-    });
-    return _.map(parsedXml.Root.data[0].record, function(record) {
-      return {
-        country: record.field[0]._,
-        code: record.field[0].$.key,
-        year: Number(record.field[2]._),
-        value: Number(record.field[3]._),
-      };
-    });
-  } catch (error) {
-    // TODO: Better error handling.
-    console.log("catch");
-    console.error(error);
-  }
-};
-
-const parseEmissionsAsync = function(xmlFile) {
-  // "Country Name","Country Code","Indicator Name","Indicator Code","1960","1961","1962","1963","1964","1965","1966","1967","1968","1969","1970","1971","1972","1973","1974","1975","1976","1977","1978","1979","1980","1981","1982","1983","1984","1985","1986","1987","1988","1989","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018"
-
-  // Array:
-  return {
-    name: null,
-    code: null,
-    valuesPerYear: null,
-  };
-};
-
-const parsePopulationsAsync = function(xmlFile) {
-  // "Country Name","Country Code","Indicator Name","Indicator Code","1960","1961","1962","1963","1964","1965","1966","1967","1968","1969","1970","1971","1972","1973","1974","1975","1976","1977","1978","1979","1980","1981","1982","1983","1984","1985","1986","1987","1988","1989","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018",
-
-  // Array:
-  return {
-    name: null,
-    code: null,
-    valuesPerYear: null,
-  };
-};
-
-const parseMetadataAsync = function(file) {
-  // "Country Code","Region","IncomeGroup","SpecialNotes","TableName",
-  return {
-    code: null,
-    region: null,
-    income: null,
-  }
-};
-
-module.exports = downloadArchiveAsync;
+module.exports = getValuesAsync;
