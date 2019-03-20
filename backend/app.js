@@ -22,7 +22,7 @@ app.use('/countries', countriesRouter);
 (async () => {
   try {
     var text = await downloadTask("http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT");
-    console.log(text);
+    console.log(text[0]);
   } catch (e) {
     // Deal with the fact the chain failed
   }
