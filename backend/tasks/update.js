@@ -3,6 +3,7 @@
 const http = require('http');
 const axios = require('axios');
 const unzipper = require('unzipper');
+const parseString = require('xml2js').parseString;
 const _ = require('lodash');
 
 // TODO: Move to config.
@@ -52,29 +53,27 @@ const downloadArchiveAsync = async function(source) {
         });
     });
     //
-    // 3. Getting a string:
+    // 3. Getting a String:
     const xmlChunks = [];
     const xml = await new Promise((resolve, reject) => {
       file.on('data', chunk => xmlChunks.push(chunk));
       file.on('error', reject);
       file.on('end', () => resolve(Buffer.concat(xmlChunks).toString('utf8')));
     });
-    return xml;
+    //
+    // 4. Getting an Object:
+    const parsedXml = await new Promise((resolve, reject) => {
+      // TODO: Handle errors
+      parseString(xml, function(error, result) {
+        resolve(result);
+      });
+    });
+    return parsedXml.Root.data[0].record;
   } catch (error) {
     // TODO: Better error handling.
+    console.log("catch");
     console.error(error);
   }
-};
-
-const extractAsync = async function(archive) {
-  // ...
-  return {
-
-  };
-};
-
-const parseCountriesAsync = function(jsonFile) {
-
 };
 
 const parseEmissionsAsync = function(xmlFile) {
