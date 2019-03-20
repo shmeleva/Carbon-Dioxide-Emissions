@@ -19,9 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/countries', countriesRouter);
 
-console.log('(1)');
 (async () => {
-  console.log('(2)');
   try {
     var text = await downloadTask("http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT");
     console.log(text);
@@ -29,6 +27,5 @@ console.log('(1)');
     // Deal with the fact the chain failed
   }
 })();
-console.log('(3)');
 
 module.exports = app;

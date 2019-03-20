@@ -32,6 +32,7 @@ const downloadCountriesAsync = async function() {
   }
 };
 
+// TODO: Split in smaller methods
 const downloadArchiveAsync = async function(source) {
   try {
     // 1. Downloading *.zip:
@@ -68,7 +69,14 @@ const downloadArchiveAsync = async function(source) {
         resolve(result);
       });
     });
-    return parsedXml.Root.data[0].record;
+    return _.map(parsedXml.Root.data[0].record, function(record) {
+      return {
+        country: record.field[0]._,
+        code: record.field[0].$.key,
+        year: Number(record.field[2]._),
+        value: Number(record.field[3]._),
+      };
+    });
   } catch (error) {
     // TODO: Better error handling.
     console.log("catch");
