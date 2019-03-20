@@ -13,8 +13,7 @@ const sources = {
   populations: 'http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL',
 };
 
-// Downloads a file
-const downloadAsync = async function(source) {
+const download = async function(source) {
   var response = await axios.get(source, {
     params: {
       downloadformat: 'xml',
@@ -24,8 +23,7 @@ const downloadAsync = async function(source) {
   return await response.data;
 };
 
-// Extracts a file from *.zip
-const extractAsync = async function(archive) {
+const extract = async function(archive) {
   return await new Promise((resolve, reject) => {
     archive
       .pipe(unzipper.Parse())
@@ -36,8 +34,7 @@ const extractAsync = async function(archive) {
   });
 };
 
-// Reads a file as a string
-const readAsStringAsync = async function(file) {
+const read = async function(file) {
   const chunks = [];
   return await new Promise((resolve, reject) => {
     file.on('data', chunk => chunks.push(chunk));
@@ -46,70 +43,52 @@ const readAsStringAsync = async function(file) {
   });
 };
 
-// Reads values from XML as an array
-const parseXmlAsync = async function(xml, valueName) {
+const parse = async function(xml, name) {
   const parsedXml = await new Promise((resolve, reject) => {
     parseString(xml, function(error, result) {
       resolve(result);
     });
   });
-
   return _.map(parsedXml.Root.data[0].record, (record) => {
     return {
-      country: record.field[0]._,
       code: record.field[0].$.key,
       year: Number(record.field[2]._),
-      [valueName]: Number(record.field[3]._),
+      [name]: Number(record.field[3]._),
     };
   });
 };
 
-const getValuesAsync = async function(source, valueName) {
-  try {
-    const archive = await downloadAsync(source);
-    const file = await extractAsync(archive);
-    const xml = await readAsStringAsync(file);
-    const values = await parseXmlAsync(xml, valueName);
-    return values;
-  } catch (error) {
-    // TODO: Better error handling.
-    console.error(error);
-  }
-};
+const getValues = async (source, name) => await download(source)
+  .then(extract)
+  .then(read)
+  .then(xml => parse(xml, name));
 
-const getEmissionsAsync = async function() {
-  return await getValuesAsync(sources.emissions, "emissions");
-};
+const getEmissions = async () => await getValues(sources.emissions, "emissions");
 
-const getPopulationsAsync = async function() {
-  return await getValuesAsync(sources.populations, "population");
-};
+const getPopulations = async () => await getValues(sources.populations, "population");
 
 const getCountriesAsync = async function() {
-  try {
-    const response = await axios.get(sources.countries, {
-      params: {
-        format: 'json',
-        per_page: 1024, // The current number of countries & regions is 304.
-      }
-    });
-    const [, items] = await response.data;
-    return _.filter(items, (item) => {
-      // The list contains both countries & regions, so we filter out regions.
-      return item.region.value != 'Aggregates';
-    });
-  } catch (error) {
-    // TODO: Better error handling.
-    console.error(error);
-  }
+  const response = await axios.get(sources.countries, {
+    params: {
+      format: 'json',
+      per_page: 1024, // The current number of countries & regions is 304.
+    }
+  });
+  const [, items] = await response.data;
+  return _.filter(items, (item) => {
+    // The list contains both countries & regions, so we filter out regions.
+    return item.region.value != 'Aggregates';
+  });
 };
 
-const getDataAsync = async function() {
+// TODO: Handle potential errors
+const getDataAsync = async function(version) {
   const countries = await getCountriesAsync();
-  const emissions = await getValuesAsync(sources.emissions, "emissions");
-  const populations = await getValuesAsync(sources.populations, "population");
+  const emissions = await getEmissions();
+  const populations = await getPopulations();
 
   return _.map(countries, (country) => {
+    // TODO: GroupBy.
     const countryEmissions = _.values(_.merge(
       _.keyBy(_.filter(emissions, (i) => i.code === country.id), 'year'),
       _.keyBy(_.filter(populations, (i) => i.code === country.id), 'year')));
@@ -118,6 +97,7 @@ const getDataAsync = async function() {
       name: country.name,
       region: country.region.value,
       income: country.incomeLevel.value,
+      version: version,
       emissions: _.map(countryEmissions, (i) => {
         return {
           year: i.year,
