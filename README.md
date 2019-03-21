@@ -7,7 +7,7 @@ Here I'll try to explain why I implemented things one way and not another.
 * [RESTful API Design](#restful-api-design)
 * [Database Schema](#database-schema)
 
-### Keeping Everything Up to Date
+### :sparkles: Keeping Everything Up to Date
 
 There were a couple of things that I've considered while thinking of a solution.
 
@@ -25,7 +25,7 @@ Third, I want to avoid unnecessary updates. To achieve this, I store an MD5 for 
 
 *There is probably an easier way, but* 🤷.
 
-### RESTful API Design
+### :sparkles: RESTful API Design
 
 #### Search
 
@@ -121,7 +121,7 @@ GET /countries&version=<version>
 
 *However, I decided not to overcomplicate things.*
 
-### Database Schema
+### :sparkles: Database Schema
 
 1. Entities do not change once they are created. So, it makes no difference whether updates are an expensive operation or nor.
 2. We need to be able to quickly *(a)* get all countries from the specified version and *(b)* countries (and their emissions) by codes from the specified version. Therefore, we can create [a compound index](https://docs.mongodb.com/manual/indexes/#compound-index) `{ version: -1, code: 1 }`, because these are the fields we use to search entities.
