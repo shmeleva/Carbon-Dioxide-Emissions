@@ -31,13 +31,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/countries', countriesRouter);
 
-(async () => {
+const Version = require('./models/version');
+const Emission = require('./models/emission');
+const Country = require('./models/country');
+
+
+/*(async () => {
+  try {
+    var latestValidVersion = await Version.findOne({
+      valid: true,
+    }).sort({
+      _id: -1,
+    });
+
+    var countries = await Country.find({
+      version: latestValidVersion._id,
+      code: 'KAZ',
+    });
+
+    console.log(countries[0].emissions);
+  } catch (e) {
+    console.error(e);
+    // Deal with the fact the chain failed
+  }
+})();*/
+
+/*(async () => {
   try {
     await updateTask();
     console.log("Updated.");
   } catch (e) {
     // Deal with the fact the chain failed
   }
-})();
+})();*/
 
 module.exports = app;
