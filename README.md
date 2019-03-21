@@ -2,27 +2,32 @@
 
 Hi! 👋
 
-#### Keeping Everything Up to Date
+Here I'll try to explain why I implemented things one way and not another.
+* [Keeping Everything Up to Date](#keeping-everything-up-to-date)
+* [RESTful API Design](#restful-api-design)
+* [Database Schema](#database-schema)
+
+### Keeping Everything Up to Date
 
 There were a couple of things that I've considered while thinking of a solution.
 
-##### Data Storage
+#### Data Storage
 
 First, constantly getting and parsing the data from the World Bank is not a feasible solution, mainly because it takes time. Therefore, I keep the data in a database in a format that is suitable for our application & update it periodically (=once a day by default).
 
-##### Data Versioning
+#### Data Versioning
 
 Second, users should not be affected by updates, meaning that they should be able to continue using the application while the data is being updated. Therefore, I keep multiple dataset versions.
 
-##### Avoiding Unnecessary Updates
+#### Avoiding Unnecessary Updates
 
 Third, I want to avoid unnecessary updates. To achieve this, I store an MD5 for each version & only perform an update if an MD5 has changed.
 
 *There is probably an easier way, but* 🤷.
 
-#### RESTful API Design
+### RESTful API Design
 
-##### Search
+#### Search
 
 To build a search with autocomplete suggestions, we need to get a list of countries with `name` and `code` fields. Since there are less than 200 countries & we only need a couple of fields at this stage, it's better to get all countries at once.
 
@@ -116,7 +121,7 @@ GET /countries&version=<version>
 
 *However, I decided not to overcomplicate things.*
 
-##### Database Schema
+### Database Schema
 
 1. Entities do not change once they are created. So, it makes no difference whether updates are an expensive operation or nor.
 2. We need to be able to quickly *(a)* get all countries from the specified version and *(b)* countries (and their emissions) by codes from the specified version. Therefore, we can create [a compound index](https://docs.mongodb.com/manual/indexes/#compound-index) `{ version: -1, code: 1 }`, because these are the fields we use to search entities.
