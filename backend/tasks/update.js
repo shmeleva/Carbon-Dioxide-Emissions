@@ -6,12 +6,14 @@ const unzipper = require('unzipper');
 const parseString = require('xml2js').parseString;
 const _ = require('lodash');
 
+
 // TODO: Move to config.
 const sources = {
   countries: 'http://api.worldbank.org/v2/country',
   emissions: 'http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT',
   populations: 'http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL',
 };
+
 
 const download = async function(source) {
   var response = await axios.get(source, {
@@ -20,10 +22,11 @@ const download = async function(source) {
     },
     responseType: 'stream',
   });
-  return await response.data;
+  return response.data;
 };
 
 const extract = async function(archive) {
+  // TODO: call reject(new Error("...")) on error
   return await new Promise((resolve, reject) => {
     archive
       .pipe(unzipper.Parse())
@@ -58,10 +61,11 @@ const parse = async function(xml, name) {
   });
 };
 
-const getValues = async (source, name) => await download(source)
-  .then(extract)
-  .then(read)
-  .then(xml => parse(xml, name));
+
+const getValues = async function(source, name) {
+  var xml = await read(await extract(await download(source)));
+  return await parse(xml, name);
+};
 
 const getEmissions = async () => await getValues(sources.emissions, "emissions");
 
@@ -80,6 +84,7 @@ const getCountriesAsync = async function() {
     return item.region.value != 'Aggregates';
   });
 };
+
 
 // TODO: Handle potential errors
 const getDataAsync = async function(version) {
