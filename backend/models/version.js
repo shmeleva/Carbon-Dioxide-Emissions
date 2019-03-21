@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var VersionSchema = new Schema({
   checksum: {
     type: String,
-    required: true,
+    required: false,
     max: 64,
   },
   valid: {

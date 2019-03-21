@@ -1,11 +1,15 @@
 'use strict'
 
-const http = require('http');
-const axios = require('axios');
-const unzipper = require('unzipper');
-const parseString = require('xml2js').parseString;
 const _ = require('lodash');
+const axios = require('axios');
+const http = require('http');
+const mongoose = require('mongoose');
+const parseString = require('xml2js').parseString;
+const unzipper = require('unzipper');
 
+const Version = require('../models/version');
+const Emission = require('../models/emission');
+const Country = require('../models/country');
 
 // TODO: Move to config.
 const sources = {
@@ -61,17 +65,12 @@ const parse = async function(xml, name) {
   });
 };
 
-
 const getValues = async function(source, name) {
   var xml = await read(await extract(await download(source)));
   return await parse(xml, name);
 };
 
-const getEmissions = async () => await getValues(sources.emissions, "emissions");
-
-const getPopulations = async () => await getValues(sources.populations, "population");
-
-const getCountriesAsync = async function() {
+const getCountries = async function() {
   const response = await axios.get(sources.countries, {
     params: {
       format: 'json',
@@ -85,12 +84,10 @@ const getCountriesAsync = async function() {
   });
 };
 
-
-// TODO: Handle potential errors
-const getDataAsync = async function(version) {
-  const countries = await getCountriesAsync();
-  const emissions = await getEmissions();
-  const populations = await getPopulations();
+const getAll = async function(version) {
+  const countries = await getCountries();
+  const emissions = await getValues(sources.emissions, "emission");
+  const populations = await getValues(sources.populations, "population");
 
   return _.map(countries, (country) => {
     // TODO: GroupBy.
@@ -102,16 +99,33 @@ const getDataAsync = async function(version) {
       name: country.name,
       region: country.region.value,
       income: country.incomeLevel.value,
-      version: version,
       emissions: _.map(countryEmissions, (i) => {
         return {
-          year: i.year,
-          value: i.emissions,
-          valuePerCapita: i.emissions / i.population,
+          year: i.year || null,
+          value: i.emission || null,
+          valuePerCapita: (i.emission / i.population) || null,
         };
       }),
+      version: version,
     };
   });
 };
 
-module.exports = getDataAsync;
+// TODO: Handle potential errors
+const update = async function() {
+  try {
+    const version = await new Version({
+      valid: false,
+    }).save();
+
+    const countries = await getAll(version._id);
+    await Country.insertMany(countries);
+
+    version.valid = true;
+    await version.save();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports = update;

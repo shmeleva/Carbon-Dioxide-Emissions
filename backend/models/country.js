@@ -1,18 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Emission = require('./emission');
 
 var CountrySchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    max: 64,
-  },
   code: {
     type: String,
     required: true,
     max: 3,
   },
-  income: {
+  name: {
     type: String,
     required: true,
     max: 64,
@@ -22,9 +18,15 @@ var CountrySchema = new Schema({
     required: true,
     max: 64,
   },
-  emissions: [Emission],
+  income: {
+    type: String,
+    required: true,
+    max: 64,
+  },
+  emissions: [Emission.schema],
   version: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Version',
     required: true,
   },
 });

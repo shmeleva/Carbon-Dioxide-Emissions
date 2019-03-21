@@ -2,10 +2,22 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 var countriesRouter = require('./routes/countries');
 
-var downloadTask = require('./tasks/update');
+var updateTask = require('./tasks/update');
+
+mongoose.set('useCreateIndex', true);
+
+// TODO: Move to config
+var mongoDB = 'mongodb://127.0.0.1/emissions_v1';
+mongoose.connect(mongoDB, {
+  useNewUrlParser: true,
+});
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 var app = express();
 
@@ -21,8 +33,8 @@ app.use('/countries', countriesRouter);
 
 (async () => {
   try {
-    var text = await downloadTask("http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT");
-    console.log(text[0]);
+    await updateTask();
+    console.log("Updated.");
   } catch (e) {
     // Deal with the fact the chain failed
   }
