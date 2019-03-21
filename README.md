@@ -117,4 +117,11 @@ GET /countries&version=<version>
 *However, I decided not to overcomplicate things.*
 
 ##### Database Schema
-...
+
+1. Entities do not change once they are created. So, it makes no difference whether updates are an expensive operation or nor.
+2. We need to be able to quickly *(a)* get all countries from the specified version and *(b)* countries (and their emissions) by codes from the specified version. Therefore, we can create [a compound index](https://docs.mongodb.com/manual/indexes/#compound-index) `{ version: -1, code: 1 }`, because these are the fields we use to search entities.
+3. We (normally) want to get all emissions of a country at once to limit the number of requests. So, emissions can be stored as an array of subdocuments.
+
+*If (1) and (3) were not the case, e.g., if we would add new values dynamically or limit a time range, I would probably do it differently.*
+
+[Why shouldn't I embed large arrays in my documents?](http://www.askasya.com/post/largeembeddedarrays/)
