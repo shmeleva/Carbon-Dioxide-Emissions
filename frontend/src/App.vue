@@ -6,9 +6,9 @@
           <nav id="nav" class="navbar navbar-expand-md px-0">
             <div class="navbar-nav mr-auto">
               <router-link to="/">
-                <font-awesome-icon :icon="['fas', 'smog']" size="lg"/>
-                <span class="page-title">
-                  <span class="ml-2 mr-0">CO</span>
+                <font-awesome-icon class="mr-2" :icon="['fas', 'smog']" size="lg"/>
+                <span class="page-title text-uppercase">
+                  <span class="mr-0">CO</span>
                   <span class="sub">2</span>
                   <span class="mx-2">emissions</span>
                 </span>
@@ -31,14 +31,14 @@
 @import "./scss/bootstrap.config.scss";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import url("https://fonts.googleapis.com/css?family=Raleway");
-/*@import "../node_modules/vue-multiselect/dist/vue-multiselect.min.css";*/
+
 #app {
   font-family: "Raleway", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
+
 #nav {
   padding: 30px;
   a {
@@ -51,10 +51,18 @@
     text-decoration-line: none;
   }
 }
+
 .page-title {
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
+
 .sub {
   vertical-align: sub;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

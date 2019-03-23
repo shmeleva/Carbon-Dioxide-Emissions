@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --dest ../backend/public",
+    "build": "vue-cli-service build --dest ../backend/public",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },

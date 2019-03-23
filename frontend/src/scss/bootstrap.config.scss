@@ -2,12 +2,13 @@
 @import "../../node_modules/bootstrap/scss/variables";
 @import "../../node_modules/bootstrap/scss/mixins";
 
-/*$body-bg:    #000000;
-$body-color: #000000;
+/*$body-bg:    #D2F1E4;
+$body-color: #D2F1E4;*/
 
 $theme-colors: (
-  "primary": purple
-);*/
+  "primary": #246A73,
+  "secondary": #6E4555
+);
 
 .form-control {
   &:focus {
