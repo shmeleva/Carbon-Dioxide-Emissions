@@ -9,6 +9,10 @@
       :max-height="600"
       openDirection="below"
       :placeholder="multiple ? 'Countries' : 'Country'"
+      label="name"
+      track-by="code"
+      @select="select"
+      @remove="remove"
     >
       <template slot="tag" slot-scope="{ option, remove }">
         <span class="badge badge-pill badge-primary badge-country p-1">
@@ -17,12 +21,6 @@
             <font-awesome-icon :icon="['fas', 'times-circle']"/>
           </span>
         </span>
-      </template>
-      <template slot="singleLabel" slot-scope="props">
-        <span>{{ props.option.name }}</span>
-      </template>
-      <template slot="option" slot-scope="props">
-        <span>{{ props.option.name }}</span>
       </template>
       <span slot="noResult">Oops! No countries found.</span>
     </multiselect>
@@ -45,6 +43,9 @@ export default {
     multiple: Boolean
   },
   async mounted() {
+    if (this.countries && this.countries.length) {
+      return;
+    }
     try {
       var response = await axios.get("/countries?compact=true", {
         responseType: "json"
@@ -54,7 +55,14 @@ export default {
       console.error(error);
     }
   },
-  methods: {},
+  methods: {
+    select(country) {
+      this.$emit("select", country);
+    },
+    remove(country) {
+      this.$emit("remove", country);
+    }
+  },
   components: {
     Multiselect
   }
