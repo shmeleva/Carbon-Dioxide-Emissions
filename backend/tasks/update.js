@@ -19,7 +19,7 @@ const sources = {
 };
 
 
-const download = async function(source) {
+const download = async function (source) {
   var response = await axios.get(source, {
     params: {
       downloadformat: 'xml',
@@ -29,19 +29,19 @@ const download = async function(source) {
   return response.data;
 };
 
-const extract = async function(archive) {
+const extract = async function (archive) {
   // TODO: call reject(new Error("...")) on error
   return await new Promise((resolve, reject) => {
     archive
       .pipe(unzipper.Parse())
-      .on('entry', function(entry) {
+      .on('entry', function (entry) {
         // Archives should only contain one entry.
         resolve(entry);
       });
   });
 };
 
-const read = async function(file) {
+const read = async function (file) {
   const chunks = [];
   return await new Promise((resolve, reject) => {
     file.on('data', chunk => chunks.push(chunk));
@@ -50,9 +50,12 @@ const read = async function(file) {
   });
 };
 
-const parse = async function(xml, name) {
+const parse = async function (xml, name) {
   const parsedXml = await new Promise((resolve, reject) => {
-    parseString(xml, function(error, result) {
+    parseString(xml, (error, result) => {
+      if (error) {
+        reject(new Error(error));
+      }
       resolve(result);
     });
   });
@@ -65,12 +68,12 @@ const parse = async function(xml, name) {
   });
 };
 
-const getValues = async function(source, name) {
+const getValues = async function (source, name) {
   var xml = await read(await extract(await download(source)));
   return await parse(xml, name);
 };
 
-const getCountries = async function() {
+const getCountries = async function () {
   const response = await axios.get(sources.countries, {
     params: {
       format: 'json',
@@ -84,7 +87,7 @@ const getCountries = async function() {
   });
 };
 
-const getAll = async function(version) {
+const getPopulatedCountries = async function (version) {
   const countries = await getCountries();
   const emissions = await getValues(sources.emissions, "emission");
   const populations = await getValues(sources.populations, "population");
@@ -112,13 +115,13 @@ const getAll = async function(version) {
 };
 
 // TODO: Handle potential errors
-const update = async function() {
+const update = async function () {
   try {
     const version = await new Version({
       valid: false,
     }).save();
 
-    const countries = await getAll(version._id);
+    const countries = await getPopulatedCountries(version._id);
     await Country.insertMany(countries);
 
     version.valid = true;

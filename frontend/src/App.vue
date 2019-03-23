@@ -1,31 +1,60 @@
 <template>
-<div id="app">
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="app">
+    <div class="container h-100">
+      <div class="row h-100 align-items-center">
+        <div class="col-lg-12">
+          <nav id="nav" class="navbar navbar-expand-md px-0">
+            <div class="navbar-nav mr-auto">
+              <router-link to="/">
+                <font-awesome-icon :icon="['fas', 'smog']" size="lg"/>
+                <span class="page-title">
+                  <span class="ml-2 mr-0">CO</span>
+                  <span class="sub">2</span>
+                  <span class="mx-2">emissions</span>
+                </span>
+              </router-link>
+            </div>
+            <div class="navbar-nav ml-auto">
+              <router-link to="/lifetime">
+                <font-awesome-icon :icon="['fas', 'user-astronaut']" size="lg"/>
+              </router-link>
+            </div>
+          </nav>
+          <router-view/>
+        </div>
+      </div>
+    </div>
   </div>
-  <router-view />
-</div>
 </template>
 
 <style lang="scss">
-@import './scss/bootstrap.config.scss';
-@import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import "./scss/bootstrap.config.scss";
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import url("https://fonts.googleapis.com/css?family=Raleway");
+/*@import "../node_modules/vue-multiselect/dist/vue-multiselect.min.css";*/
 #app {
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
+  font-family: "Raleway", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
 }
 #nav {
-    padding: 30px;
-    a {
-        font-weight: bold;
-        color: #2c3e50;
-        &.router-link-exact-active {
-            color: #42b983;
-        }
+  padding: 30px;
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+    &.router-link-exact-active {
+      color: theme-color("primary");
     }
+    text-decoration: none;
+    text-decoration-line: none;
+  }
+}
+.page-title {
+  font-size: 1.25rem;
+}
+.sub {
+  vertical-align: sub;
 }
 </style>
