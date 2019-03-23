@@ -1,8 +1,10 @@
 var express = require('express');
+var history = require('connect-history-api-fallback');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+
 
 var countriesRouter = require('./routes/countries');
 
@@ -21,6 +23,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 var app = express();
 
+app.use(history());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
