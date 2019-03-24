@@ -47,8 +47,11 @@ export default {
       return;
     }
     try {
-      var response = await axios.get("/countries?compact=true", {
-        responseType: "json"
+      var response = await axios.get("/countries", {
+        responseType: "json",
+        params: {
+          compact: "true"
+        }
       });
       this.countries = response.data;
     } catch (error) {
