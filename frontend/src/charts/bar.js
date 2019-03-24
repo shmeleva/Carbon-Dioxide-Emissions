@@ -28,7 +28,8 @@ export default {
                 textStyle: {
                     color: '#e54035'
                 }
-            }
+            },
+            inverse: true
         },
         xAxis: {
             axisTick: { show: false },

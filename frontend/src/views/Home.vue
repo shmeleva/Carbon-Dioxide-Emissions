@@ -37,6 +37,10 @@ export default {
     }
   },
   methods: {
+    // 1. Выбор года.
+    // 2. Окраска по экономике.
+    // 3. Легенда.
+    // 4. Короны для сверхдержав.
     push: async function(code) {
       var country = await CountryService.get(code);
       if (country) {
@@ -53,12 +57,12 @@ export default {
       _.remove(this.countries, { code: code });
       this.refreshChart();
     },
-    /*getData: function(property) {
-      return _.map(_.takeRight(this.country.emissions, this.age), property);
-    },*/
     refreshChart: function() {
-      console.log(_.map(this.countries, "name"));
-      this.options.yAxis.data = _.map(this.countries, "name");
+      // Ellipsizing long country names...
+      this.options.yAxis.data = _.map(this.countries, x => {
+        const n = 16;
+        return x.name.length > n ? x.name.substr(0, n - 1) + "…" : x.name;
+      });
       this.options.series[0].data = _.map(
         this.countries,
         x => x.emissions[20].value
@@ -68,9 +72,6 @@ export default {
           value: x.emissions[20].value
         };
       });
-      // 2000
-      // series[0].data
-      // series[1].data
     }
   },
   components: {
