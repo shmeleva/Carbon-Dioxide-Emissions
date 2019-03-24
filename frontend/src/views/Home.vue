@@ -1,24 +1,26 @@
 <template>
   <div class="home">
     <div>
-      <search class="pb-3" :multiple="true" @select="add" @remove="remove"/>
+      <search
+        class="pb-3"
+        :multiple="true"
+        @select="x => push(x.code)"
+        @remove="x => remove(x.code)"
+      />
       <div class="form-check">
         <input id="perCapitaCheckbox" class="form-check-input" type="checkbox" v-model="perCapita">
         <label class="form-check-label" for="perCapitaCheckbox">Per capita</label>
       </div>
-      <bar-chart :chart-data="highIncomeData" :options="options"></bar-chart>
-      <!--<bar-chart :chart-data="lowIncomeData" :options="options"></bar-chart>-->
+      <v-chart :options="options"/>
     </div>
   </div>
 </template>
 
 <script>
 import Search from "@/components/Search.vue";
-import BarChart from "@/components/BarChart.vue";
-import axios from "axios";
+import CountryService from "@/services/countryService.js";
+import BarChart from "@/charts/bar.js";
 import _ from "lodash";
-
-// https://ecomfe.github.io/echarts-examples/public/editor.html?c=pictorialBar-velocity&theme=dark
 
 export default {
   name: "home",
@@ -26,68 +28,59 @@ export default {
     return {
       countries: [],
       perCapita: false,
-      options: { responsive: true, maxBarThickness: 5 },
-      highIncomeData: null,
-      lowIncomeData: null
+      options: BarChart.options
     };
   },
-  mounted() {
-    this.fillData();
+  watch: {
+    perCapita: function() {
+      this.refreshChart();
+    }
   },
   methods: {
-    async add(country) {
-      try {
-        var response = await axios.get("/countries", {
-          responseType: "json",
-          params: {
-            codes: country.code
-          }
-        });
-        if (response.data.length) {
-          this.highIncomeData = {
-            labels: this.highIncomeData.labels,
-            datasets: _.concat(this.highIncomeData.datasets, [
-              {
-                label: "Thailand",
-                backgroundColor: "#03F303",
-                data: [this.getRandomInt()]
-              }
-            ])
-          };
-        }
-      } catch (error) {
-        console.error(error);
+    push: async function(code) {
+      var country = await CountryService.get(code);
+      if (country) {
+        // Pushing in A-Z order.
+        this.countries.splice(
+          _.sortedIndexBy(this.countries, country, "name"),
+          0,
+          country
+        );
+        this.refreshChart();
       }
     },
-    remove(country) {
-      _.remove(this.countries, {
-        code: country.code
+    remove: function(code) {
+      _.remove(this.countries, { code: code });
+      this.refreshChart();
+    },
+    /*getData: function(property) {
+      return _.map(_.takeRight(this.country.emissions, this.age), property);
+    },*/
+    refreshChart: function() {
+      console.log(_.map(this.countries, "name"));
+      this.options.yAxis.data = _.map(this.countries, "name");
+      this.options.series[0].data = _.map(
+        this.countries,
+        x => x.emissions[20].value
+      );
+      this.options.series[1].data = _.map(this.countries, x => {
+        return {
+          value: x.emissions[20].value
+        };
       });
-    },
-    fillData() {
-      this.highIncomeData = {
-        labels: ["High Income"],
-        datasets: [
-          {
-            label: "Russia",
-            backgroundColor: "#f87979",
-            data: [this.getRandomInt()]
-          },
-          {
-            label: "Finland",
-            backgroundColor: "#03F303",
-            data: [this.getRandomInt()]
-          }
-        ]
-      };
-    },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+      // 2000
+      // series[0].data
+      // series[1].data
     }
   },
   components: {
-    Search,
-    BarChart
+    Search
   }
 };
 </script>
+
+<style scoped lang="scss">
+.echarts {
+  width: 100%;
+}
+</style>
