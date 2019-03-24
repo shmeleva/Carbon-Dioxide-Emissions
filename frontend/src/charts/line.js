@@ -1,4 +1,4 @@
-var colors = ["#5793f3", "#d14a61"];
+var colors = ["#246A73", "#6E4555"];
 
 export default {
     options: {
@@ -14,11 +14,6 @@ export default {
             data: [],
             axisTick: {
                 alignWithLabel: true
-            },
-            axisLine: {
-                lineStyle: {
-                    color: colors[1]
-                }
             }
         },
         yAxis: {
@@ -33,21 +28,12 @@ export default {
                 data: [],
                 type: "line",
                 smooth: true,
-                markPoint: {
-                    data: [
-                        { type: "max", name: "Maximum" },
-                        { type: "min", name: "Minimum" }
-                    ]
-                },
-                markLine: {
-                    data: [{ type: "average", name: "Average" }]
-                }
             },
             {
                 name: "Per Capita",
                 data: [],
                 type: "line",
-                smooth: true
+                smooth: true,
             }
         ]
     }

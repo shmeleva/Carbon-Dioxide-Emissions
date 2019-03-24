@@ -64,7 +64,10 @@ export default {
       if ((this.visibility = this.country && this.age)) {
         this.options.xAxis.data = this.getData("year");
         this.options.series[0].data = this.getData("value");
-        this.options.series[1].data = this.getData("valuePerCapita");
+        this.options.series[1].data = _.map(this.getData("valuePerCapita"), v =>
+          v ? parseFloat(v.toFixed(5)) : null
+        );
+        console.log(this.options.series[1].data);
       }
     }
   },
