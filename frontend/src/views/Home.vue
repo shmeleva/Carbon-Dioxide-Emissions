@@ -26,6 +26,8 @@ export default {
   name: "home",
   data() {
     return {
+      years: [],
+      year: null,
       countries: [],
       perCapita: false,
       options: BarChart.options
@@ -34,13 +36,22 @@ export default {
   watch: {
     perCapita: function() {
       this.refreshChart();
+    },
+    year: function() {
+      this.refreshChart();
+    }
+  },
+  computed: {
+    property: function() {
+      return this.perCapita ? "valuePerCapita" : "value";
     }
   },
   methods: {
-    // 1. Выбор года.
-    // 2. Окраска по экономике.
-    // 3. Легенда.
-    // 4. Короны для сверхдержав.
+    // 1. Выбор года. /23
+    // 2. Окраска по экономике. /24
+    // 3. Легенда. /24
+    // 4. Короны для сверхдержав. /1
+    // 5. Remove countries w/ no data
     push: async function(code) {
       var country = await CountryService.get(code);
       if (country) {
@@ -50,7 +61,17 @@ export default {
           0,
           country
         );
-        this.refreshChart();
+        // Selecting the latest available year (usually 2014).
+        this.years = this.years || _.map(country.emissions, "year");
+        var latestRecord =
+          _.takeRight(
+            _.dropRightWhile(country.emissions, [this.property, null])
+          )[0] || _.takeRight(country.emissions)[0];
+        if (this.year == latestRecord.year) {
+          this.refreshChart();
+        } else {
+          this.year = latestRecord.year; // Triggers refreshChart().
+        }
       }
     },
     remove: function(code) {
@@ -63,13 +84,16 @@ export default {
         const n = 16;
         return x.name.length > n ? x.name.substr(0, n - 1) + "…" : x.name;
       });
+
+      var that = this;
+
       this.options.series[0].data = _.map(
         this.countries,
-        x => x.emissions[20].value
+        x => _.find(x.emissions, y => y.year == that.year)[that.property]
       );
       this.options.series[1].data = _.map(this.countries, x => {
         return {
-          value: x.emissions[20].value
+          value: _.find(x.emissions, y => y.year == that.year)[[that.property]]
         };
       });
     }
