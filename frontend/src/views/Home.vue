@@ -64,7 +64,6 @@ export default {
     }
   },
   methods: {
-    // 1. Выбор года. /23
     // 2. Окраска по экономике. /24
     // 3. Легенда. /24
     // 4. Короны для сверхдержав. /1
@@ -80,14 +79,19 @@ export default {
         );
         // Selecting the latest available year (usually 2014).
         this.years = this.years || _.map(country.emissions, "year");
-        var latestRecord =
-          _.takeRight(
-            _.dropRightWhile(country.emissions, [this.property, null])
-          )[0] || _.takeRight(country.emissions)[0];
-        if (this.year == latestRecord.year) {
+
+        var latestRecord = _.takeRight(
+          _.dropRightWhile(country.emissions, [this.property, null])
+        )[0];
+
+        var latestYear = latestRecord
+          ? latestRecord.year
+          : this.year || _.takeRight(country.emissions)[0].year;
+
+        if (this.year == latestYear) {
           this.refreshChart();
         } else {
-          this.year = latestRecord.year; // Triggers refreshChart().
+          this.year = latestYear; // Triggers refreshChart().
         }
       }
     },
@@ -95,6 +99,7 @@ export default {
       _.remove(this.countries, { code: code });
       this.refreshChart();
     },
+    getColour: function() {},
     refreshChart: function() {
       // Ellipsizing long country names...
       this.options.yAxis.data = _.map(this.countries, x => {
@@ -104,13 +109,17 @@ export default {
 
       var that = this;
 
-      this.options.series[0].data = _.map(
-        this.countries,
-        x => _.find(x.emissions, y => y.year == that.year)[that.property]
-      );
-      this.options.series[1].data = _.map(this.countries, x => {
+      this.options.series[0].data = _.map(this.countries, c => {
         return {
-          value: _.find(x.emissions, y => y.year == that.year)[[that.property]]
+          value: _.find(c.emissions, e => e.year == that.year)[that.property],
+          income: c.income
+        };
+      });
+      this.options.series[1].data = _.map(this.countries, c => {
+        return {
+          value: c.superpower
+            ? _.find(c.emissions, e => e.year == that.year)[that.property]
+            : null
         };
       });
     }

@@ -41,7 +41,22 @@ export default {
             type: 'bar',
             itemStyle: {
                 normal: {
-                    opacity: 0.5
+                    opacity: 0.5,
+                    color: function (params) {
+                        // build a color map as your need.
+                        console.log(params);
+                        var colorList = [
+                            '#C1232B', '#B5C334', '#FCCE10', '#E87C25', '#27727B',
+                            '#FE8463', '#9BCA63', '#FAD860', '#F3A43B', '#60C0DD',
+                            '#D7504B', '#C6E579', '#F4E001', '#F0805A', '#26C0C0'
+                        ];
+                        return colorList[params.dataIndex]
+                    },
+                    /*label: {
+                        show: true,
+                        position: 'right',
+                        formatter: '{b}\n{c}'
+                    }*/
                 },
                 emphasis: {
                     opacity: 1
