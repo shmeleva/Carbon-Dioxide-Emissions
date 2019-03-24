@@ -13,11 +13,12 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Search from "@/components/Search.vue";
 import BarChart from "@/components/BarChart.vue";
 import axios from "axios";
 import _ from "lodash";
+
+// https://ecomfe.github.io/echarts-examples/public/editor.html?c=pictorialBar-velocity&theme=dark
 
 export default {
   name: "home",
