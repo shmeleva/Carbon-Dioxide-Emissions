@@ -26,7 +26,7 @@
         >
       </div>
     </div>
-    <v-chart v-if="visibility" :options="options"/>
+    <v-chart v-if="visible" :options="options"/>
   </div>
 </template>
 
@@ -43,9 +43,13 @@ export default {
       code: null,
       country: null,
       age: null,
-      visibility: false,
       options: LineChart.options
     };
+  },
+  computed: {
+    visible: function() {
+      return this.country && this.age;
+    }
   },
   watch: {
     code: async function(newValue) {
@@ -61,13 +65,12 @@ export default {
       return _.map(_.takeRight(this.country.emissions, this.age), property);
     },
     refreshChart: function() {
-      if ((this.visibility = this.country && this.age)) {
+      if (this.visible) {
         this.options.xAxis.data = this.getData("year");
         this.options.series[0].data = this.getData("value");
         this.options.series[1].data = _.map(this.getData("valuePerCapita"), v =>
           v ? parseFloat(v.toFixed(5)) : null
         );
-        console.log(this.options.series[1].data);
       }
     }
   },

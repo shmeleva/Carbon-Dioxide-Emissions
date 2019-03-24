@@ -11,7 +11,19 @@
         <input id="perCapitaCheckbox" class="form-check-input" type="checkbox" v-model="perCapita">
         <label class="form-check-label" for="perCapitaCheckbox">Per capita</label>
       </div>
-      <v-chart :options="options"/>
+      <template v-if="visible">
+        <v-chart :options="options"/>
+        <vue-slider v-model="year" :data="years" :marks="true" :interval="10" tooltip="always">
+          <template v-slot:label="{ active, value }">
+            <div
+              :class="['vue-slider-mark-label', 'custom-label', { active }]"
+            >{{ value % 5 == 0 ? value : '' }}</div>
+          </template>
+          <template v-slot:tooltip="{ value }">
+            <div class="custom-tooltip">{{ value }}</div>
+          </template>
+        </vue-slider>
+      </template>
     </div>
   </div>
 </template>
@@ -20,13 +32,15 @@
 import Search from "@/components/Search.vue";
 import CountryService from "@/services/countryService.js";
 import BarChart from "@/charts/bar.js";
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/default.css";
 import _ from "lodash";
 
 export default {
   name: "home",
   data() {
     return {
-      years: [],
+      years: null,
       year: null,
       countries: [],
       perCapita: false,
@@ -44,6 +58,9 @@ export default {
   computed: {
     property: function() {
       return this.perCapita ? "valuePerCapita" : "value";
+    },
+    visible: function() {
+      return this.countries && this.countries.length;
     }
   },
   methods: {
@@ -99,7 +116,8 @@ export default {
     }
   },
   components: {
-    Search
+    Search,
+    VueSlider
   }
 };
 </script>

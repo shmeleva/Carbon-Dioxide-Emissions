@@ -24,7 +24,8 @@
     "vue-chartjs": "^3.4.2",
     "vue-echarts": "^4.0.1",
     "vue-multiselect": "^2.1.4",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-slider-component": "^3.0.16"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
