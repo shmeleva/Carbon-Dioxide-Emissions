@@ -2,12 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var VersionSchema = new Schema({
-  checksum: {
-    type: String,
-    required: false,
-    max: 64,
-  },
-  valid: {
+  dirty: {
     type: Boolean,
     required: true,
   }

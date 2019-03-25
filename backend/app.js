@@ -1,19 +1,19 @@
+var config = require('./config');
+var cookieParser = require('cookie-parser');
 var express = require('express');
 var history = require('connect-history-api-fallback');
-var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var path = require('path');
 
 var countriesRouter = require('./routes/countries');
 
 var updateTask = require('./tasks/update');
+var clearTask = require('./tasks/clear');
 
 mongoose.set('useCreateIndex', true);
 
-// TODO: Move to config
-var mongoDB = 'mongodb://127.0.0.1/emissions_v1';
-mongoose.connect(mongoDB, {
+mongoose.connect(config.mongo.url, {
   useNewUrlParser: true,
 });
 
@@ -33,31 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/countries', countriesRouter);
 
-const Version = require('./models/version');
-const Emission = require('./models/emission');
-const Country = require('./models/country');
-
-
-/*(async () => {
-  try {
-    var latestValidVersion = await Version.findOne({
-      valid: true,
-    }).sort({
-      _id: -1,
-    });
-
-    var countries = await Country.find({
-      version: latestValidVersion._id,
-      code: 'KAZ',
-    });
-
-    console.log(countries[0].emissions);
-  } catch (e) {
-    console.error(e);
-    // Deal with the fact the chain failed
-  }
-})();*/
-
+var CronJob = require('cron').CronJob;
+new CronJob(config.tasks.update.interval, updateTask, null, true, null, null, true);
 /*(async () => {
   try {
     await updateTask();

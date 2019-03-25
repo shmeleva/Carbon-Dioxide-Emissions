@@ -23,6 +23,10 @@ var CountrySchema = new Schema({
     required: true,
     max: 64,
   },
+  superpower: {
+    type: Boolean,
+    required: false,
+  },
   emissions: [Emission.schema],
   version: {
     type: mongoose.Schema.Types.ObjectId,

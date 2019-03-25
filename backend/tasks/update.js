@@ -2,22 +2,12 @@
 
 const _ = require('lodash');
 const axios = require('axios');
-const http = require('http');
-const mongoose = require('mongoose');
+const config = require('../config');
 const parseString = require('xml2js').parseString;
 const unzipper = require('unzipper');
 
 const Version = require('../models/version');
-const Emission = require('../models/emission');
 const Country = require('../models/country');
-
-// TODO: Move to config.
-const sources = {
-  countries: 'http://api.worldbank.org/v2/country',
-  emissions: 'http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT',
-  populations: 'http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL',
-};
-
 
 const download = async function (source) {
   var response = await axios.get(source, {
@@ -30,7 +20,6 @@ const download = async function (source) {
 };
 
 const extract = async function (archive) {
-  // TODO: call reject(new Error("...")) on error
   return await new Promise((resolve, reject) => {
     archive
       .pipe(unzipper.Parse())
@@ -38,6 +27,7 @@ const extract = async function (archive) {
         // Archives should only contain one entry.
         resolve(entry);
       });
+    // TODO: call reject(new Error("")) on error!
   });
 };
 
@@ -74,7 +64,7 @@ const getValues = async function (source, name) {
 };
 
 const getCountries = async function () {
-  const response = await axios.get(sources.countries, {
+  const response = await axios.get(config.worldBank.countries, {
     params: {
       format: 'json',
       per_page: 1024, // The current number of countries & regions is 304.
@@ -89,19 +79,20 @@ const getCountries = async function () {
 
 const getPopulatedCountries = async function (version) {
   const countries = await getCountries();
-  const emissions = await getValues(sources.emissions, "emission");
-  const populations = await getValues(sources.populations, "population");
+  const emissions = _.groupBy(await getValues(config.worldBank.emissions, "emission"), "code");
+  const populations = _.groupBy(await getValues(config.worldBank.populations, "population"), "code");
 
   return _.map(countries, (country) => {
-    // TODO: GroupBy.
+    // TODO: Group emissions and populations by `code` first!
     const countryEmissions = _.values(_.merge(
-      _.keyBy(_.filter(emissions, (i) => i.code === country.id), 'year'),
-      _.keyBy(_.filter(populations, (i) => i.code === country.id), 'year')));
+      _.keyBy(emissions[country.id], 'year'),
+      _.keyBy(populations[country.id], 'year')));
     return {
       code: country.id,
       name: country.name,
       region: country.region.value,
       income: country.incomeLevel.value,
+      superpower: _.includes(config.superpowers, country.id),
       emissions: _.map(countryEmissions, (i) => {
         return {
           year: i.year || null,
@@ -114,20 +105,22 @@ const getPopulatedCountries = async function (version) {
   });
 };
 
-// TODO: Handle potential errors
+// TODO: Avoid unnecessary updates,
+// e.g., by calculating an MD5 & comparing
+// it to an existing version.
 const update = async function () {
+  console.log("Update started...");
   try {
-    const version = await new Version({
-      valid: false,
-    }).save();
-
-    const countries = await getPopulatedCountries(version._id);
-    await Country.insertMany(countries);
-
-    version.valid = true;
+    const version = await new Version({ dirty: true }).save();
+    await Country.insertMany(await getPopulatedCountries(version._id));
+    version.dirty = false;
     await version.save();
+    console.log("Update completed.");
   } catch (error) {
     console.error(error);
+    // TODO:
+    // 1. Delete `version`.
+    // 2. Retry, if `error` is a network error.
   }
 }
 
