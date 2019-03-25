@@ -3,15 +3,14 @@ import axios from "axios";
 export default {
   async get(code) {
     try {
-      var response = await axios.get("/countries", {
+      var response = await axios.get(`/countries/${code}`, {
         responseType: "json",
         params: {
-          codes: code
+          fields: "code name income superpower emissions"
         }
       });
-      if (response.data.length) {
-        return response.data[0];
-      }
+      console.log(response);
+      return response.data;
     } catch (error) {
       console.error(error);
     }
@@ -21,7 +20,7 @@ export default {
       var response = await axios.get("/countries", {
         responseType: "json",
         params: {
-          compact: "true"
+          fields: "code name"
         }
       });
       return response.data;

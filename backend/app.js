@@ -7,6 +7,7 @@ var mongoose = require("mongoose");
 var path = require("path");
 
 var countriesRouter = require("./routes/countries");
+var countryRouter = require("./routes/country");
 
 mongoose.set("useCreateIndex", true);
 
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/countries", countriesRouter);
+app.use("/countries/:code", countryRouter);
 
 var CronJob = require("cron").CronJob;
 new CronJob(config.tasks.update.interval, require("./tasks/update"), null, true, null, null, config.tasks.update.runOnInit);
