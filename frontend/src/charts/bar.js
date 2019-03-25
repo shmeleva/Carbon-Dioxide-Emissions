@@ -26,7 +26,7 @@ export default {
                 type: 'none'
             },
             formatter: function (params) {
-                return params[0].name + ': ' + (params[0].value || 'NA');
+                return params[0].name + ': ' + (params[0].value ? parseFloat(params[0].value.toFixed(5)) : 'NA');
             }
         },
         yAxis: {
@@ -36,6 +36,10 @@ export default {
             axisLabel: {
                 textStyle: {
                     color: textColour
+                },
+                formatter: function (name) {
+                    const n = 12;
+                    return name.length > n ? name.substr(0, n - 1) + "…" : name;
                 }
             },
             inverse: true
@@ -46,7 +50,7 @@ export default {
         },
         color: [textColour],
         series: [{
-            name: 'hill',
+            name: 'bar',
             type: 'bar',
             itemStyle: {
                 color: function (params) {

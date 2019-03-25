@@ -97,15 +97,10 @@ export default {
       this.refreshChart();
     },
     refreshChart: function() {
-      // Ellipsizing long country names...
-      this.options.yAxis.data = _.map(this.countries, x => {
-        const n = 16;
-        return x.name.length > n ? x.name.substr(0, n - 1) + "…" : x.name;
-      });
+      this.options.yAxis.data = _.map(this.countries, "name");
 
       var that = this;
 
-      // Bars.
       this.options.series[0].data = _.map(this.countries, c => {
         return {
           value: _.find(c.emissions, e => e.year == that.year)[that.property],
@@ -113,7 +108,6 @@ export default {
         };
       });
 
-      // Superpower icons.
       this.options.series[1].data = _.map(this.countries, c => {
         return {
           value: c.superpower

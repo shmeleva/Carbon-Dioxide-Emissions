@@ -29,7 +29,7 @@
 
 <script>
 import _ from "lodash";
-import axios from "axios";
+import CountryService from "@/services/countryService.js";
 import Multiselect from "vue-multiselect";
 
 export default {
@@ -47,18 +47,7 @@ export default {
     if (this.countries && this.countries.length) {
       return;
     }
-    try {
-      var response = await axios.get("/countries", {
-        responseType: "json",
-        params: {
-          compact: "true"
-        }
-      });
-      this.countries = response.data;
-      console.log(_.uniqBy(this.countries, "income"));
-    } catch (error) {
-      console.error(error);
-    }
+    this.countries = await CountryService.getAll();
   },
   methods: {
     select(country) {

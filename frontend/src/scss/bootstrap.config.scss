@@ -20,6 +20,10 @@ $theme-colors: (
   }
 }
 
+.vue-slider-process {
+  background-color: theme-color("primary");
+}
+
 // Modified SASS for vue-multiselect & Bootstrap 4.
 //
 // Original:
