@@ -14,7 +14,7 @@
       <template v-if="visible">
         <div class="row justify-content-md-center">
           <div>Low Income</div>
-          <div class="legend-income__gradient col-6 mx-3"></div>
+          <div class="legend-income__gradient col-2 col-lg-6 mx-3"></div>
           <div>High Income</div>
         </div>
         <v-chart :options="options"/>

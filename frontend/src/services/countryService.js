@@ -9,7 +9,6 @@ export default {
           fields: "code name income superpower emissions"
         }
       });
-      console.log(response);
       return response.data;
     } catch (error) {
       console.error(error);
