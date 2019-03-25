@@ -1,7 +1,6 @@
 module.exports = {
   mongo: {
-    //url: process.env.MONGODB
-    url: "mongodb://127.0.0.1/emissions_v2"
+    url: process.env.MONGODB
   },
   worldBank: {
     countries: "http://api.worldbank.org/v2/country",
