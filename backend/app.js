@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
-
 var countriesRouter = require('./routes/countries');
 
 var updateTask = require('./tasks/update');

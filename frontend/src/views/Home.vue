@@ -112,7 +112,6 @@ export default {
           income: c.income
         };
       });
-
       this.options.series[1].data = _.map(this.countries, c => {
         return {
           value: c.superpower
