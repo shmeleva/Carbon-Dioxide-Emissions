@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import Search from "@/components/Search.vue";
-import CountryService from "@/services/countryService.js";
+import _ from "lodash";
 import BarChart from "@/charts/bar.js";
+import CountryService from "@/services/countryService.js";
+import Search from "@/components/Search.vue";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
-import _ from "lodash";
 
 export default {
   name: "home",
@@ -60,14 +60,10 @@ export default {
       return this.perCapita ? "valuePerCapita" : "value";
     },
     visible: function() {
-      return this.countries && this.countries.length;
+      return this.countries.length;
     }
   },
   methods: {
-    // 2. Окраска по экономике. /24
-    // 3. Легенда. /24
-    // 4. Короны для сверхдержав. /1
-    // 5. Remove countries w/ no data
     push: async function(code) {
       var country = await CountryService.get(code);
       if (country) {
@@ -77,9 +73,10 @@ export default {
           0,
           country
         );
-        // Selecting the latest available year (usually 2014).
+
         this.years = this.years || _.map(country.emissions, "year");
 
+        // Selecting the latest available year (usually 2014).
         var latestRecord = _.takeRight(
           _.dropRightWhile(country.emissions, [this.property, null])
         )[0];
@@ -99,7 +96,6 @@ export default {
       _.remove(this.countries, { code: code });
       this.refreshChart();
     },
-    getColour: function() {},
     refreshChart: function() {
       // Ellipsizing long country names...
       this.options.yAxis.data = _.map(this.countries, x => {
@@ -109,12 +105,15 @@ export default {
 
       var that = this;
 
+      // Bars.
       this.options.series[0].data = _.map(this.countries, c => {
         return {
           value: _.find(c.emissions, e => e.year == that.year)[that.property],
           income: c.income
         };
       });
+
+      // Superpower icons.
       this.options.series[1].data = _.map(this.countries, c => {
         return {
           value: c.superpower

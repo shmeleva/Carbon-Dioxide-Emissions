@@ -5,9 +5,9 @@ const Version = require('../models/version');
 const Emission = require('../models/emission');
 const Country = require('../models/country');
 
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   const version = await Version.findOne({ valid: true }).sort({ _id: -1 });
-  const fields = req.query.compact ? '_id code name' : undefined;
+  const fields = req.query.compact ? '_id code name income' : undefined;
   const rules = { version: version._id };
 
   if (req.query.codes) {

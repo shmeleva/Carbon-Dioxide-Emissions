@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import Multiselect from "vue-multiselect";
+import _ from "lodash";
 import axios from "axios";
+import Multiselect from "vue-multiselect";
 
 export default {
   name: "Search",
@@ -54,6 +55,7 @@ export default {
         }
       });
       this.countries = response.data;
+      console.log(_.uniqBy(this.countries, "income"));
     } catch (error) {
       console.error(error);
     }

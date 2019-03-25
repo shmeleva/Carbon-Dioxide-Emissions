@@ -37,7 +37,7 @@ import LineChart from "@/charts/line.js";
 import _ from "lodash";
 
 export default {
-  name: "Lifetime",
+  name: "lifetime",
   data() {
     return {
       code: null,
