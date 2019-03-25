@@ -12,7 +12,7 @@
         <label class="form-check-label" for="perCapitaCheckbox">Per capita</label>
       </div>
       <template v-if="visible">
-        <div class="row justify-content-md-center">
+        <div class="row justify-content-center">
           <div class="col-2">Low Income</div>
           <div class="legend-income__gradient col-2 col-lg-6 mx-3"></div>
           <div class="col-2">High Income</div>

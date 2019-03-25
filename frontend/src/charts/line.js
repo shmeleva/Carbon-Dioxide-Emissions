@@ -26,7 +26,11 @@ export default {
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "{value} kt"
+        formatter: function (value) {
+          // Hide country names on smaller screens.
+          // TODO: Move `width` to share with other modules.
+          return (screen.width <= 768) ? "" : `${value} kt`;
+        }
       },
       textStyle: {
         fontFamily: fontFamily

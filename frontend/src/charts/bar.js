@@ -35,6 +35,8 @@ export default {
           fontFamily: fontFamily
         },
         formatter: function (name) {
+          // Hide country names on smaller screens.
+          // TODO: Move `width` to share with other modules.
           if (screen.width <= 768) {
             return "";
           }
