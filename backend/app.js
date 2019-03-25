@@ -8,9 +8,6 @@ var path = require('path');
 
 var countriesRouter = require('./routes/countries');
 
-var updateTask = require('./tasks/update');
-var clearTask = require('./tasks/clear');
-
 mongoose.set('useCreateIndex', true);
 
 mongoose.connect(config.mongo.url, {
@@ -34,14 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/countries', countriesRouter);
 
 var CronJob = require('cron').CronJob;
-new CronJob(config.tasks.update.interval, updateTask, null, true, null, null, true);
-/*(async () => {
-  try {
-    await updateTask();
-    console.log("Updated.");
-  } catch (e) {
-    // Deal with the fact the chain failed
-  }
-})();*/
+new CronJob(config.tasks.update.interval, require('./tasks/update'), null, true, null, null, config.tasks.update.runOnInit);
+new CronJob(config.tasks.clear.interval, require('./tasks/clear'), null, true, null, null, config.tasks.clear.runOnInit);
 
 module.exports = app;

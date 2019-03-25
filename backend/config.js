@@ -10,10 +10,12 @@ module.exports = {
     superpowers: ["USA", "CHN", "RUS"],
     tasks: {
         update: {
-            interval: "53 23 * * 0"
+            interval: "53 23 * * 0",
+            runOnInit: true
         },
         clear: {
-            interval: "53 23 * * 1"
+            interval: "53 23 * * 1",
+            runOnInit: false
         }
     }
 } 
