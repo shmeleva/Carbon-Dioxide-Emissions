@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import _ from "lodash";
 import CountryService from "@/services/countryService.js";
 import Multiselect from "vue-multiselect";
 

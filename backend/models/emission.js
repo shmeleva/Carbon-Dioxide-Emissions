@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var EmissionSchema = new Schema({
@@ -16,4 +16,4 @@ var EmissionSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Emission', EmissionSchema);
+module.exports = mongoose.model("Emission", EmissionSchema);

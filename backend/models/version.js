@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var VersionSchema = new Schema({
@@ -8,4 +8,4 @@ var VersionSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('Version', VersionSchema);
+module.exports = mongoose.model("Version", VersionSchema);

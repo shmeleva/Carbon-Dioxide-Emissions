@@ -1,29 +1,29 @@
-'use strict'
+"use strict"
 
-const _ = require('lodash');
-const axios = require('axios');
-const config = require('../config');
-const parseString = require('xml2js').parseString;
-const unzipper = require('unzipper');
+const _ = require("lodash");
+const axios = require("axios");
+const config = require("../config");
+const parseString = require("xml2js").parseString;
+const unzipper = require("unzipper");
 
-const Version = require('../models/version');
-const Country = require('../models/country');
+const Version = require("../models/version");
+const Country = require("../models/country");
 
 const download = async function (source) {
   var response = await axios.get(source, {
     params: {
-      downloadformat: 'xml',
+      downloadformat: "xml",
     },
-    responseType: 'stream',
+    responseType: "stream",
   });
   return response.data;
 };
 
 const extract = async function (archive) {
-  return await new Promise((resolve, reject) => {
+  return await new Promise((resolve) => {
     archive
       .pipe(unzipper.Parse())
-      .on('entry', function (entry) {
+      .on("entry", function (entry) {
         // Archives should only contain one entry.
         resolve(entry);
       });
@@ -34,9 +34,9 @@ const extract = async function (archive) {
 const read = async function (file) {
   const chunks = [];
   return await new Promise((resolve, reject) => {
-    file.on('data', chunk => chunks.push(chunk));
-    file.on('error', reject);
-    file.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    file.on("data", chunk => chunks.push(chunk));
+    file.on("error", reject);
+    file.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
   });
 };
 
@@ -66,14 +66,14 @@ const getValues = async function (source, name) {
 const getCountries = async function () {
   const response = await axios.get(config.worldBank.countries, {
     params: {
-      format: 'json',
+      format: "json",
       per_page: 1024, // The current number of countries & regions is 304.
     }
   });
   const [, items] = await response.data;
   return _.filter(items, (item) => {
     // The list contains both countries & regions, so we filter out regions.
-    return item.region.value != 'Aggregates';
+    return item.region.value != "Aggregates";
   });
 };
 
@@ -85,8 +85,8 @@ const getPopulatedCountries = async function (version) {
   return _.map(countries, (country) => {
     // TODO: Group emissions and populations by `code` first!
     const countryEmissions = _.values(_.merge(
-      _.keyBy(emissions[country.id], 'year'),
-      _.keyBy(populations[country.id], 'year')));
+      _.keyBy(emissions[country.id], "year"),
+      _.keyBy(populations[country.id], "year")));
     return {
       code: country.id,
       name: country.name,
@@ -109,13 +109,11 @@ const getPopulatedCountries = async function (version) {
 // e.g., by calculating an MD5 & comparing
 // it to an existing version.
 const update = async function () {
-  console.log("Update started...");
   try {
     const version = await new Version({ dirty: true }).save();
     await Country.insertMany(await getPopulatedCountries(version._id));
     version.dirty = false;
     await version.save();
-    console.log("Update completed.");
   } catch (error) {
     console.error(error);
     // TODO:

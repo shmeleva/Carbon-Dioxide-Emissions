@@ -1,12 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const Version = require('../models/version');
-const Emission = require('../models/emission');
-const Country = require('../models/country');
+const Version = require("../models/version");
+const Country = require("../models/country");
 
 // TODO: Change API.
-router.get('/', async function (req, res, next) {
+router.get("/", async function (req, res) {
   const version = await Version.findOne({ dirty: false }).sort({ _id: -1 });
 
   if (version == null) {
@@ -14,16 +13,14 @@ router.get('/', async function (req, res, next) {
     return;
   }
 
-  const fields = req.query.compact ? '_id code name income' : undefined;
+  const fields = req.query.compact ? "_id code name income" : undefined;
   const rules = { version: version._id };
 
   if (req.query.codes) {
-    rules.code = { $in: req.query.codes.split(',') };
+    rules.code = { $in: req.query.codes.split(",") };
   }
 
-  var countries = await Country.find(rules, fields);
-  console.log(countries);
-  res.send(countries);
+  res.send(await Country.find(rules, fields));
 });
 
 module.exports = router;

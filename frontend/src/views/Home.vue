@@ -22,7 +22,7 @@
           <template v-slot:label="{ active, value }">
             <div
               :class="['vue-slider-mark-label', 'custom-label', { active }]"
-            >{{ value % 5 == 0 ? value : '' }}</div>
+            >{{ value % 5 === 0 ? value : '' }}</div>
           </template>
           <template v-slot:tooltip="{ value }">
             <div class="custom-tooltip">{{ value }}</div>
@@ -90,7 +90,7 @@ export default {
           ? latestRecord.year
           : this.year || _.takeRight(country.emissions)[0].year;
 
-        if (this.year == latestYear) {
+        if (this.year === latestYear) {
           this.refreshChart();
         } else {
           this.year = latestYear; // Triggers refreshChart().
@@ -108,14 +108,14 @@ export default {
 
       this.options.series[0].data = _.map(this.countries, c => {
         return {
-          value: _.find(c.emissions, e => e.year == that.year)[that.property],
+          value: _.find(c.emissions, e => e.year === that.year)[that.property],
           income: c.income
         };
       });
       this.options.series[1].data = _.map(this.countries, c => {
         return {
           value: c.superpower
-            ? _.find(c.emissions, e => e.year == that.year)[that.property]
+            ? _.find(c.emissions, e => e.year === that.year)[that.property]
             : null
         };
       });

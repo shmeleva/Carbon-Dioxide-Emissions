@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var Emission = require('./emission');
+var Emission = require("./emission");
 
 var CountrySchema = new Schema({
   code: {
@@ -30,7 +30,7 @@ var CountrySchema = new Schema({
   emissions: [Emission.schema],
   version: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Version',
+    ref: "Version",
     required: true,
   },
 });
@@ -40,4 +40,4 @@ CountrySchema.index({
   code: 1,
 });
 
-module.exports = mongoose.model('Country', CountrySchema);
+module.exports = mongoose.model("Country", CountrySchema);
