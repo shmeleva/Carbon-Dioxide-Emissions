@@ -10,10 +10,10 @@ var pathSymbols = {
 };
 
 const colours = {
-    'High income': '#260011',
-    'Upper middle income': '#512C3A',
-    'Lower middle income': '#B38697',
-    'Low income': '#FECDDE',
+    'High income': '#246A73',
+    'Upper middle income': '#1F8A84',
+    'Lower middle income': '#3DA989',
+    'Low income': '#71C784',
 };
 const defaultColour = '#CCCCCC';
 const textColour = '#2A272A';
@@ -35,7 +35,8 @@ export default {
             axisLine: { show: false },
             axisLabel: {
                 textStyle: {
-                    color: textColour
+                    color: textColour,
+                    fontFamily: "Raleway, sans-serif"
                 },
                 formatter: function (name) {
                     const n = 12;

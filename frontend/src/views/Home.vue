@@ -7,11 +7,16 @@
         @select="x => push(x.code)"
         @remove="x => remove(x.code)"
       />
-      <div class="form-check">
+      <div class="form-check mb-3">
         <input id="perCapitaCheckbox" class="form-check-input" type="checkbox" v-model="perCapita">
         <label class="form-check-label" for="perCapitaCheckbox">Per capita</label>
       </div>
       <template v-if="visible">
+        <div class="row justify-content-md-center">
+          <div>Low Income</div>
+          <div class="legend-income__gradient col-6 mx-3"></div>
+          <div>High Income</div>
+        </div>
         <v-chart :options="options"/>
         <vue-slider v-model="year" :data="years" :marks="true" :interval="10" tooltip="always">
           <template v-slot:label="{ active, value }">
@@ -127,5 +132,16 @@ export default {
 <style scoped lang="scss">
 .echarts {
   width: 100%;
+}
+.legend-income__gradient {
+  height: 1.5rem;
+  background-image: linear-gradient(
+    to right,
+    #71c784,
+    #49b189,
+    #2b9a88,
+    #1e8281,
+    #246a73
+  );
 }
 </style>

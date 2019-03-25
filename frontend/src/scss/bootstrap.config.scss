@@ -1,9 +1,6 @@
-@import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/variables";
-@import "../../node_modules/bootstrap/scss/mixins";
-
-/*$body-bg:    #D2F1E4;
-$body-color: #D2F1E4;*/
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
 
 $theme-colors: (
   "primary": #246A73,
@@ -28,9 +25,6 @@ $theme-colors: (
 //
 // Original:
 // https://github.com/vpratfr/vue-multiselect/blob/69a2b450c660a5d0b5ee53e264d585d9f488bb13/src/_vue-multiselect-bootstrap4.scss
-
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
 
 $vue-multiselect-padding-x : 0.375rem !default;
 $vue-multiselect-padding-y : $custom-select-padding-y !default;
