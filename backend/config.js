@@ -1,6 +1,6 @@
 module.exports = {
     mongo: {
-        url: "mongodb://127.0.0.1/emissions_v2"
+        url: process.env.MONGODB
     },
     worldBank: {
         countries: "http://api.worldbank.org/v2/country",
@@ -11,7 +11,7 @@ module.exports = {
     tasks: {
         update: {
             interval: "53 23 * * 0",
-            runOnInit: true
+            runOnInit: false
         },
         clear: {
             interval: "53 23 * * 1",
