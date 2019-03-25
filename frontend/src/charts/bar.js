@@ -35,6 +35,9 @@ export default {
           fontFamily: fontFamily
         },
         formatter: function (name) {
+          if (screen.width <= 768) {
+            return "";
+          }
           const n = 12;
           return name.length > n ? name.substr(0, n - 1) + "…" : name;
         }
