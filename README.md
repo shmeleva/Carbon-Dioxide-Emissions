@@ -1,23 +1,24 @@
-# Carbon-Dioxide-Emissions
+# :chart_with_upwards_trend: Carbon-Dioxide-Emissions
 
 #### SPA
-`https://carbon-dioxide-emissions-spa.herokuapp.com`
+[`https://carbon-dioxide-emissions-spa.herokuapp.com`](https://carbon-dioxide-emissions-spa.herokuapp.com)
 
 #### API
-`https://carbon-dioxide-emissions.herokuapp.com`
+[`https://carbon-dioxide-emissions.herokuapp.com`](https://carbon-dioxide-emissions.herokuapp.com)
 
+**Examples**
 * [`/countries?fields=code+name`](https://carbon-dioxide-emissions.herokuapp.com/countries?fields=code+name)
 * [`/countries/FIN?fields=code+name+income`](https://carbon-dioxide-emissions.herokuapp.com/countries/FIN?fields=code+name+income)
 
- ### :sparkles: Table of Contents 
+ ### :page_facing_up: Table of Contents 
 
-* [User Interface](#sparkles-user-interface)
-* [Keeping Everything Up to Date](#sparkles-keeping-everything-up-to-date)
-* [RESTful API Design](#sparkles-restful-api-design)
-* [Database Schema](#sparkles-database-schema)
-* [Problems & Further Improvements](#sparkles-problems--further-improvements)
+* [User Interface](#woman-user-interface)
+* [Keeping Everything Up to Date](#date-keeping-everything-up-to-date)
+* [RESTful API Design](#rocket-restful-api-design)
+* [Database Schema](#package-database-schema)
+* [Problems & Further Improvements](#wrench-problems--further-improvements)
 
-### :sparkles: User Interface
+### :woman: User Interface
 
 I've used [Vue.js](https://vuejs.org/) as a frontend framework and [ECharts](https://echarts.apache.org/) for visualizations (I feel like it's more flexible than classic [Chart.js](https://www.chartjs.org/)).
 
@@ -33,7 +34,7 @@ I've used [Vue.js](https://vuejs.org/) as a frontend framework and [ECharts](htt
 * CO<sub>2</sub> emissions in the past `age` years are shown on a line chart.
 
 
-### :sparkles: Keeping Everything Up to Date
+### :date: Keeping Everything Up to Date
 
 Here are some things that I've considered.
 
@@ -62,7 +63,7 @@ The data is updated even if there were no changes.
 ##### Solution
 *The idea was to store an MD5 for each version & only perform an update if an MD5 has changed. Not implemented, though.*
 
-### :sparkles: RESTful API Design
+### :rocket: RESTful API Design
 
 #### Search
 
@@ -125,7 +126,7 @@ GET /countries&version=<version>
 
 *However, I decided not to overcomplicate things.*
 
-### :sparkles: Database Schema
+### :package: Database Schema
 
 (1) Entities do not change once they are created. So, it makes no difference whether updates are an expensive operation or nor.
 
@@ -133,7 +134,7 @@ GET /countries&version=<version>
 
 (3) We (normally) want to get all emissions of a country at once to limit the number of requests. So, emissions can be stored as an array of subdocuments.
 
-### :sparkles: Problems & Further Improvements
+### :wrench: Problems & Further Improvements
 
 * I don't really handle errors well, especially when it comes to updating the data. There are some TODOs for that in a source code. E.g., for a network error I could've retry the request.
 * UI works just fine on small screens but doesn't look particularly nice. When a browser window size changes, charts do not adjust accordingly.
