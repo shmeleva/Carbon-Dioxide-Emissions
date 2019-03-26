@@ -137,5 +137,7 @@ GET /countries&version=<version>
 ### :wrench: Problems & Further Improvements
 
 * I don't really handle errors well, especially when it comes to updating the data. There are some TODOs for that in a source code. E.g., for a network error I could've retry the request.
-* UI works just fine on small screens but doesn't look particularly nice. When a browser window size changes, charts do not adjust accordingly. Internet Explorer \*cough\*
+* The UI works just fine on small screens, but charts don't look particularly nice. When a browser window size changes, charts do not adjust accordingly. Internet Explorer \*cough\*
 * I set some colours and font styles for charts in JS, so should the theme change, several files must be edited.
+* Document `_id`s could've been removed from API responses.
+* Tests. I don't have any.
