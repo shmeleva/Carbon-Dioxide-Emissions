@@ -16,3 +16,7 @@ $theme-colors: (
      box-shadow: none !important;
   }
 }
+
+.vue-slider-process {
+  background-color: theme-color("primary");
+}

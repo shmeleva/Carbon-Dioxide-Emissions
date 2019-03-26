@@ -151,8 +151,4 @@ export default {
     #246a73
   );
 }
-
-.vue-slider-process {
-  background-color: theme-color("primary");
-}
 </style>
