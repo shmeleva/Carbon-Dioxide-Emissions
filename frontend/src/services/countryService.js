@@ -1,11 +1,9 @@
 import axios from "axios";
 
-const root = "";
-
 export default {
   async get(code) {
     try {
-      var response = await axios.get(`${root}/countries/${code}`, {
+      var response = await axios.get(`/countries/${code}`, {
         responseType: "json",
         params: {
           fields: "code name income superpower emissions"
@@ -18,7 +16,7 @@ export default {
   },
   async getAll() {
     try {
-      var response = await axios.get(`${root}/countries`, {
+      var response = await axios.get(`/countries`, {
         responseType: "json",
         params: {
           fields: "code name"
