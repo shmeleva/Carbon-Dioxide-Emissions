@@ -120,3 +120,9 @@ GET /countries&version=<version>
 (2) We need to be able to quickly *(a)* get all countries from the specified version and *(b)* a country with its emissions by its code from the specified version. Therefore, we can create [a compound index](https://docs.mongodb.com/manual/indexes/#compound-index) `{ version: -1, code: 1 }`, because these are the fields we use to search entities.
 
 (3) We (normally) want to get all emissions of a country at once to limit the number of requests. So, emissions can be stored as an array of subdocuments.
+
+### :sparkles: Problems & Further Improvements
+
+* I don't really handle errors well, especially when it comes to updating the data. There are some TODOs for that in a source code. E.g., for a network error I could've retry the request.
+* UI works just fine on small screens but doesn't look particularly nice. When a browser window size changes, charts do not adjust accordingly.
+* I set some colours and font styles for charts in JS, so should the theme change, several files must be edited.
