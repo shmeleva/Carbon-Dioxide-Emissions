@@ -1,9 +1,10 @@
 # Carbon-Dioxide-Emissions
 
-* [User Interface](#user-interface)
-* [Keeping Everything Up to Date](#keeping-everything-up-to-date)
-* [RESTful API Design](#restful-api-design)
-* [Database Schema](#database-schema)
+* [User Interface](#sparkles-user-interface)
+* [Keeping Everything Up to Date](#sparkles-keeping-everything-up-to-date)
+* [RESTful API Design](#sparkles-restful-api-design)
+* [Database Schema](#sparkles-database-schema)
+* [Problems & Further Improvements](#sparkles-problems--further-improvements)
 
 ### :sparkles: User Interface
 
