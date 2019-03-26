@@ -18,14 +18,15 @@ const download = async function (source) {
 };
 
 const extract = async function (archive) {
-  return await new Promise((resolve) => {
+  return await new Promise((resolve, reject) => {
     archive
       .pipe(unzipper.Parse())
       .on("entry", function (entry) {
         // Archives should only contain one entry.
         resolve(entry);
-      });
-    // TODO: call reject(new Error("")) on error!
+      })
+      .promise()
+      .then(() => reject(new Error("Empty archive.")), e => reject(new Error(e)));
   });
 };
 
@@ -81,7 +82,6 @@ const getPopulatedCountries = async function (version) {
   const populations = _.groupBy(await getValues(config.worldBank.populations, "population"), "code");
 
   return _.map(countries, (country) => {
-    // TODO: Group emissions and populations by `code` first!
     const countryEmissions = _.values(_.merge(
       _.keyBy(emissions[country.id], "year"),
       _.keyBy(populations[country.id], "year")));
@@ -107,9 +107,11 @@ const getPopulatedCountries = async function (version) {
 // e.g., by calculating an MD5 & comparing
 // it to an existing version.
 const update = async function () {
+  var versionId = null;
   try {
     const version = await new Version({ dirty: true }).save();
-    await Country.insertMany(await getPopulatedCountries(version._id));
+    versionId = version._id;
+    await Country.insertMany(await getPopulatedCountries(versionId));
     version.dirty = false;
     await version.save();
   } catch (error) {

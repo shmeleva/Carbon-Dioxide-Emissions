@@ -29,7 +29,8 @@
 
 <style lang="scss">
 @import "./scss/bootstrap.config.scss";
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "./scss/bootstrap.search.scss";
+@import "~bootstrap/scss/bootstrap.scss";
 @import url("https://fonts.googleapis.com/css?family=Raleway");
 
 #app {

@@ -2,6 +2,7 @@
   <div class="home">
     <div>
       <search
+        ref="search"
         class="pb-3"
         :multiple="true"
         @select="x => push(x.code)"
@@ -70,8 +71,10 @@ export default {
   },
   methods: {
     push: async function(code) {
-      var country = await CountryService.get(code);
-      if (country) {
+      const country = await CountryService.get(code);
+      const selectedCountries = this.$refs.search.selectedCountries;
+
+      if (country && _.findIndex(selectedCountries, ["code", code] > -1)) {
         // Pushing in A-Z order.
         this.countries.splice(
           _.sortedIndexBy(this.countries, country, "name"),
@@ -82,11 +85,11 @@ export default {
         this.years = this.years || _.map(country.emissions, "year");
 
         // Selecting the latest available year (usually 2014).
-        var latestRecord = _.takeRight(
+        const latestRecord = _.takeRight(
           _.dropRightWhile(country.emissions, [this.property, null])
         )[0];
 
-        var latestYear = latestRecord
+        const latestYear = latestRecord
           ? latestRecord.year
           : this.year || _.takeRight(country.emissions)[0].year;
 
@@ -102,16 +105,20 @@ export default {
       this.refreshChart();
     },
     refreshChart: function() {
+      // Country names on Y-axis.
       this.options.yAxis.data = _.map(this.countries, "name");
 
-      var that = this;
+      const that = this;
 
+      // Bars.
       this.options.series[0].data = _.map(this.countries, c => {
         return {
           value: _.find(c.emissions, e => e.year === that.year)[that.property],
           income: c.income
         };
       });
+
+      // Crowns for superpowers.
       this.options.series[1].data = _.map(this.countries, c => {
         return {
           value: c.superpower
@@ -132,6 +139,7 @@ export default {
 .echarts {
   width: 100%;
 }
+
 .legend-income__gradient {
   height: 1.5rem;
   background-image: linear-gradient(
@@ -142,5 +150,9 @@ export default {
     #1e8281,
     #246a73
   );
+}
+
+.vue-slider-process {
+  background-color: theme-color("primary");
 }
 </style>

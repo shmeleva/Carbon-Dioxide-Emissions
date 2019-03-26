@@ -1,13 +1,10 @@
-var config = require("./config");
-var cookieParser = require("cookie-parser");
-var express = require("express");
-var history = require("connect-history-api-fallback");
-var logger = require("morgan");
-var mongoose = require("mongoose");
-var path = require("path");
-
-var countriesRouter = require("./routes/countries");
-var countryRouter = require("./routes/country");
+const config = require("./config");
+const cookieParser = require("cookie-parser");
+const express = require("express");
+const history = require("connect-history-api-fallback");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const path = require("path");
 
 mongoose.set("useCreateIndex", true);
 
@@ -15,10 +12,10 @@ mongoose.connect(config.mongo.url, {
   useNewUrlParser: true,
 });
 
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
-var app = express();
+const app = express();
 
 app.use(history());
 app.use(logger("dev"));
@@ -29,10 +26,9 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/countries", countriesRouter);
-app.use("/countries/:code", countryRouter);
+app.use("/countries", require("./routes/countries"));
 
-var CronJob = require("cron").CronJob;
+const CronJob = require("cron").CronJob;
 new CronJob(config.tasks.update.interval, require("./tasks/update"), null, true, null, null, config.tasks.update.runOnInit);
 new CronJob(config.tasks.clear.interval, require("./tasks/clear"), null, true, null, null, config.tasks.clear.runOnInit);
 

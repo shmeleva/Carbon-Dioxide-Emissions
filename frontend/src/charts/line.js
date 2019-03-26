@@ -1,9 +1,8 @@
-const colors = ["#246A73", "#6E4555"];
 const fontFamily = "Raleway, sans-serif";
 
 export default {
   options: {
-    color: colors,
+    color: ["#246A73", "#6E4555"],
     tooltip: {
       trigger: "axis"
     },
