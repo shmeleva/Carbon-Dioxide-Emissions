@@ -17,7 +17,6 @@ db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
 const app = express();
 
-app.use(history());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -27,6 +26,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/countries", require("./routes/countries"));
+
+app.use(history());
 
 const CronJob = require("cron").CronJob;
 new CronJob(config.tasks.update.interval, require("./tasks/update"), null, true, null, null, config.tasks.update.runOnInit);
