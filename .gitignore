@@ -85,6 +85,6 @@ typings/
 .dynamodb/
 
 # npm run build
-/frontend/dist
+#/frontend/dist
 
 .DS_Store

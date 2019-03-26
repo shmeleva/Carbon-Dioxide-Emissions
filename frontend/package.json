@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --dest ../backend/public",
-    "build": "vue-cli-service build --dest ../backend/public",
+    "serve": "vue-cli-service serve --dest ./dist",
+    "build": "vue-cli-service build --dest ./dist",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -15,8 +15,12 @@
     "@fortawesome/vue-fontawesome": "^0.1.6",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "connect-history-api-fallback": "^1.6.0",
     "echarts": "^4.2.1",
+    "express": "^4.16.4",
+    "http-proxy-middleware": "^0.19.1",
     "lodash": "^4.17.11",
+    "morgan": "^1.9.1",
     "npm": "^6.9.0",
     "vue": "^2.6.6",
     "vue-echarts": "^4.0.1",
