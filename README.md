@@ -1,11 +1,15 @@
 # Carbon-Dioxide-Emissions
 
-SPA: https://carbon-dioxide-emissions-spa.herokuapp.com
-API: https://carbon-dioxide-emissions.herokuapp.com
+#### SPA
+`https://carbon-dioxide-emissions-spa.herokuapp.com`
 
-#### Examples
-* [/countries?fields=code+name](https://carbon-dioxide-emissions.herokuapp.com/countries?fields=code+name)
-* [/countries/FIN?fields=code+name+income](https://carbon-dioxide-emissions.herokuapp.com/countries/FIN?fields=code+name+income)
+#### API
+`https://carbon-dioxide-emissions.herokuapp.com`
+
+* [`/countries?fields=code+name`](https://carbon-dioxide-emissions.herokuapp.com/countries?fields=code+name)
+* [`/countries/FIN?fields=code+name+income`](https://carbon-dioxide-emissions.herokuapp.com/countries/FIN?fields=code+name+income)
+
+ ### :sparkles: Table of Contents 
 
 * [User Interface](#sparkles-user-interface)
 * [Keeping Everything Up to Date](#sparkles-keeping-everything-up-to-date)
