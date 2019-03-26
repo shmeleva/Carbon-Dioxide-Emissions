@@ -1,10 +1,8 @@
 const config = require("./config");
 const cookieParser = require("cookie-parser");
 const express = require("express");
-const history = require("connect-history-api-fallback");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-const path = require("path");
 
 mongoose.set("useCreateIndex", true);
 
@@ -23,11 +21,8 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/countries", require("./routes/countries"));
-
-app.use(history());
 
 const CronJob = require("cron").CronJob;
 new CronJob(config.tasks.update.interval, require("./tasks/update"), null, true, null, null, config.tasks.update.runOnInit);
