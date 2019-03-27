@@ -3,6 +3,8 @@
 #### SPA
 [`https://carbon-dioxide-emissions-spa.herokuapp.com`](https://carbon-dioxide-emissions-spa.herokuapp.com)
 
+*It takes some time for the API dyno to wake up and serve a full list of countries when it's accessed for the first time. So "List is empty" will be there for a couple of seconfs.*
+
 #### API
 [`https://carbon-dioxide-emissions.herokuapp.com`](https://carbon-dioxide-emissions.herokuapp.com)
 
